@@ -58,19 +58,25 @@ abstract class NetworkBound<RequestType, ResultType>
                     }
                     //reload new data from Db
                     result.addSource(loadFromDb()) { newData ->
+                        println(newData)
                         setValue(Resource.success(newData))
                     }
                 }
             } else {
                 onFetchFailed()
+                val errorMsg = errorResponseMessage(response)
                 uiScope.launch {
                     result.addSource(dbSource) { data ->
-                        setValue(Resource.error(response.message(), data))
+                        setValue(Resource.error(errorMsg, data))
                     }
                 }
             }
         }
     }
+
+    private fun errorResponseMessage(response: Response<RequestType>) =
+            response.errorBody()?.string() ?: response.message() ?: ""
+
 
     protected open fun onFetchFailed() {}
 

@@ -14,6 +14,8 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
+import okhttp3.MediaType
+import okhttp3.ResponseBody
 import org.hamcrest.CoreMatchers
 import org.hamcrest.MatcherAssert
 import org.junit.After
@@ -92,19 +94,134 @@ class NetworkBoundTest {
 
         val observer = mock<Observer<Resource<A>>>()
         networkBound.asLiveData().observeForever(observer)
-        waitForCoroutineWork()
+        waitFor()
 
         Mockito.verify(observer).onChanged(Resource.loading(null))
 
         dbData.value = null
 
-        waitForCoroutineWork()
+        waitFor()
 
         MatcherAssert.assertThat(saved.get(), CoreMatchers.`is`(networkResult))
         Mockito.verify(observer).onChanged(Resource.success(fetchedDbA))
     }
 
-    private fun waitForCoroutineWork() = runBlocking {
+    @Test
+    fun failureNetworkFetching_Test() {
+        val saved = AtomicBoolean(false)
+        handleShouldFetch = { it == null }
+        handleSaveCallResult = {
+            saved.set(true)
+        }
+
+        val body = ResponseBody.create(MediaType.parse("text/html"), "error")
+        val errorResponse = Response.error<A>(500, body)
+        handleCreateCall = {MutableLiveData<Response<A>>()
+            .apply { value =  errorResponse}}
+
+        val observer = mock<Observer<Resource<A>>>()
+        networkBound.asLiveData().observeForever(observer)
+        waitFor()
+        Mockito.verify(observer).onChanged(Resource.loading(null))
+
+        MatcherAssert.assertThat(saved.get(), CoreMatchers.`is`(false))
+        dbData.value = null
+        waitFor()
+        Mockito.verify(observer).onChanged(Resource.error("error", null))
+    }
+
+    @Test
+    fun dbSuccessWithoutNetwork_Test() {
+        val saved = AtomicBoolean(false)
+        handleShouldFetch = {it == null}
+        handleSaveCallResult = {
+            saved.set(true)
+        }
+
+        val storedDbData1 = A(1)
+        val storedDbData2 = A(2)
+        val observer = mock<Observer<Resource<A>>>()
+        networkBound.asLiveData().observeForever(observer)
+
+        waitFor()
+        Mockito.verify(observer).onChanged(Resource.loading(null))
+
+        dbData.value = storedDbData1
+
+        waitFor()
+        Mockito.verify(observer).onChanged(Resource.success(storedDbData1))
+        MatcherAssert.assertThat(saved.get(), CoreMatchers.`is`(false))
+
+        dbData.value = storedDbData2
+        Mockito.verify(observer).onChanged(Resource.success(storedDbData2))
+    }
+
+    @Test
+    fun dbSuccessNetworkError_Test() {
+        val saved = AtomicBoolean(false)
+        val dbValue = A(3)
+        handleShouldFetch = { a -> a === dbValue }
+        handleSaveCallResult = {
+            saved.set(true)
+        }
+
+        val apiResponseLiveData = MutableLiveData<Response<A>>()
+        handleCreateCall = { apiResponseLiveData }
+        val body = ResponseBody.create(MediaType.parse("text/html"), "error")
+        val observer = mock<Observer<Resource<A>>>()
+
+        networkBound.asLiveData().observeForever(observer)
+        waitFor()
+        Mockito.verify(observer).onChanged(Resource.loading(null))
+
+        dbData.value = dbValue
+        waitFor()
+        Mockito.verify(observer).onChanged(Resource.loading(dbValue))
+
+        apiResponseLiveData.value = Response.error(500, body)
+        waitFor()
+        Mockito.verify(observer).onChanged(Resource.error("error", dbValue))
+
+        val nextDbValue = A(5)
+        dbData.value = nextDbValue
+        waitFor()
+        Mockito.verify(observer).onChanged(Resource.error("error", nextDbValue))
+        MatcherAssert.assertThat(saved.get(), CoreMatchers.`is`(false))
+
+        Mockito.verifyNoMoreInteractions(observer)
+    }
+
+    @Test
+    fun dbSuccessWithSuccessReFetch_Test() {
+        val dbValue = A(101)
+        val dbValue2 = A(104)
+        val saved = AtomicReference<A>()
+
+        handleShouldFetch = { a -> a === dbValue }
+        handleSaveCallResult = { a ->
+            saved.set(a)
+            dbData.value = dbValue2
+        }
+
+        val apiResponseLiveData = MutableLiveData<Response<A>>()
+        handleCreateCall = { apiResponseLiveData }
+        val observer = mock<Observer<Resource<A>>>()
+        networkBound.asLiveData().observeForever(observer)
+        waitFor()
+        Mockito.verify(observer).onChanged(Resource.loading(null))
+
+        dbData.value = dbValue
+        waitFor()
+        Mockito.verify(observer).onChanged(Resource.loading(dbValue))
+
+        val networkResult = A(101)
+        apiResponseLiveData.value = Response.success(networkResult)
+        waitFor()
+        MatcherAssert.assertThat(saved.get(), CoreMatchers.`is`(networkResult))
+        Mockito.verify(observer).onChanged(Resource.success(dbValue2))
+    }
+
+    private fun waitFor() = runBlocking {
         //testScope.currentJob.join()
         delay(1000)
     }

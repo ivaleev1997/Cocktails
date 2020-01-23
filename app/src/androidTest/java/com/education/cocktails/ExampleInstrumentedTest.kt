@@ -2,7 +2,7 @@ package com.education.cocktails
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.education.cocktails.model.CocktailDataEntity
+import com.education.cocktails.model.Cocktail
 import com.education.cocktails.network.Api
 import com.education.cocktails.network.TheCocktailsDBApi
 import kotlinx.coroutines.runBlocking
@@ -36,7 +36,7 @@ class ExampleInstrumentedTest {
 
     @Test
     fun testNetworking() {
-        var randomCocktails = listOf<CocktailDataEntity>()
+        var randomCocktails = listOf<Cocktail>()
 
         runBlocking {
             val response = cocktailsDBApi.getRandomAsync().await()

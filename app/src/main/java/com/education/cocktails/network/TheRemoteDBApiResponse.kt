@@ -1,11 +1,11 @@
 package com.education.cocktails.network
 
-import com.education.cocktails.model.CocktailDataEntity
+import com.education.cocktails.model.Cocktail
 
 data class TheCocktailsDBApiResponse(
-    val drinks: List<CocktailDataEntity>
+    val drinks: List<Cocktail>
 )
 
 data class TheCocktailsDBApiLiteResponse(
-    val drinks: List<CocktailsLite>
+    val drinks: List<Cocktail>
 )

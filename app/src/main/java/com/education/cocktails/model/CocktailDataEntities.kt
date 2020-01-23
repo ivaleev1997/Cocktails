@@ -2,15 +2,14 @@ package com.education.cocktails.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.education.cocktails.network.CocktailsBase
 import com.google.gson.annotations.SerializedName
 
 @Entity
-data class CocktailDataEntity(
+data class Cocktail(
     @PrimaryKey(autoGenerate = false)
-    override val idDrink: Long,
+    val idDrink: Long,
     @SerializedName("strDrink")
-    override val drink: String,
+    val drink: String,
     @SerializedName("strDrinkAlternate")
     val drinkAlternate: String?,
     @SerializedName("strVideo")
@@ -18,11 +17,11 @@ data class CocktailDataEntity(
     @SerializedName("strCategory")
     val category: String?,
     @SerializedName("strAlcoholic")
-    val alcoholic: String,
+    val alcoholic: String?,
     @SerializedName("strInstructions")
-    val instructions: String,
+    val instructions: String?,
     @SerializedName("strDrinkThumb")
-    override val image: String?,
+    val image: String?,
 
     val favorite: Boolean?,
 
@@ -56,9 +55,16 @@ data class CocktailDataEntity(
     val measure13: String?,
     val measure14: String?,
     val measure15: String?
-) : CocktailsBase
+)
 
 @Entity
 data class CocktailsCategory(
+    @SerializedName("strCategory")
     val category: String
+)
+
+@Entity
+data class CocktailsIngredient(
+    @SerializedName("strIngredient1")
+    val ingredient: String
 )
