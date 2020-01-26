@@ -4,7 +4,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.education.cocktails.model.Cocktail
 import com.education.cocktails.network.Api
-import com.education.cocktails.network.TheCocktailsDBApi
+import com.education.cocktails.network.TheCocktailsApi
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -27,11 +27,11 @@ class ExampleInstrumentedTest {
         assertEquals("com.education.cocktails", appContext.packageName)
     }
 
-    private lateinit var cocktailsDBApi: TheCocktailsDBApi
+    private lateinit var cocktailsApi: TheCocktailsApi
 
     @Before
     fun init() {
-        cocktailsDBApi = Api.apiService
+        cocktailsApi = Api.API_SERVICE
     }
 
     @Test
@@ -39,7 +39,7 @@ class ExampleInstrumentedTest {
         var randomCocktails = listOf<Cocktail>()
 
         runBlocking {
-            val response = cocktailsDBApi.getRandomAsync().await()
+            val response = cocktailsApi.getRandomAsync()
             if (response.isSuccessful)
                 randomCocktails = response.body()?.drinks ?: listOf()
         }

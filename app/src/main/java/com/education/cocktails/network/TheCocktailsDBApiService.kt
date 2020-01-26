@@ -10,7 +10,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object Api {
-    val apiService: TheCocktailsDBApi by lazy {
+    val API_SERVICE: TheCocktailsApi by lazy {
         val okHttpBuilder = OkHttpClient.Builder().apply {
             if (BuildConfig.DEBUG)
                 addInterceptor(HttpLoggingInterceptor().apply {
@@ -26,6 +26,6 @@ object Api {
             .client(okHttpClient)
             .baseUrl("https://www.thecocktaildb.com/api/json/v1/1/")
             .build()
-            .create(TheCocktailsDBApi::class.java)
+            .create(TheCocktailsApi::class.java)
     }
 }

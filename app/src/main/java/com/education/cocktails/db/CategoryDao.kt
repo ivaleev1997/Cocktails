@@ -8,7 +8,7 @@ import com.education.cocktails.model.CocktailsCategory
 @Dao
 interface CategoryDao {
 
-    @Query("SELECT * FROM cocktail")
+    @Query("SELECT * FROM cocktailsCategory")
     fun getCategories(): LiveData<List<CocktailsCategory>>
 
 }

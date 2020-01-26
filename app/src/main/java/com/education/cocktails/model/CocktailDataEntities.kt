@@ -59,12 +59,14 @@ data class Cocktail(
 
 @Entity
 data class CocktailsCategory(
+    @PrimaryKey(autoGenerate = false)
     @SerializedName("strCategory")
     val category: String
 )
 
 @Entity
 data class CocktailsIngredient(
+    @PrimaryKey(autoGenerate = false)
     @SerializedName("strIngredient1")
     val ingredient: String
 )

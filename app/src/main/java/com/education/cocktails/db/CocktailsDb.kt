@@ -1,6 +1,7 @@
 package com.education.cocktails.db
 
 import androidx.room.Database
+import androidx.room.RoomDatabase
 import com.education.cocktails.model.Cocktail
 import com.education.cocktails.model.CocktailsCategory
 import com.education.cocktails.model.CocktailsIngredient
@@ -13,7 +14,7 @@ import com.education.cocktails.model.CocktailsIngredient
     version = 1,
     exportSchema = false
 )
-abstract class CocktailsDb {
+abstract class CocktailsDb: RoomDatabase() {
     abstract fun getCocktailDao(): CocktailDao
     abstract fun getCategoryDao(): CategoryDao
     abstract fun getIngredientDao(): IngredientDao

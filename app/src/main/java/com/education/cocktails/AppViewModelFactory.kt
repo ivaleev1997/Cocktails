@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import javax.inject.Inject
 import javax.inject.Provider
 
-class AppViewModuleFactory
+class AppViewModelFactory
     @Inject constructor(private val creators: @JvmSuppressWildcards MutableMap<Class<out ViewModel>, Provider<ViewModel>>)
     : ViewModelProvider.Factory {
 
