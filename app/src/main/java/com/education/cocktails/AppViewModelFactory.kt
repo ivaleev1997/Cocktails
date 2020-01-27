@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import javax.inject.Inject
 import javax.inject.Provider
 
+@Suppress("UNCHECKED_CAST")
 class AppViewModelFactory
     @Inject constructor(private val creators: @JvmSuppressWildcards MutableMap<Class<out ViewModel>, Provider<ViewModel>>)
     : ViewModelProvider.Factory {

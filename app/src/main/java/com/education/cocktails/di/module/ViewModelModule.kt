@@ -3,7 +3,7 @@ package com.education.cocktails.di.module
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.education.cocktails.AppViewModelFactory
-import com.education.cocktails.CocktailsMainFragmentViewModel
+import com.education.cocktails.ui.mainlist.CocktailsMainFragmentViewModel
 import com.education.cocktails.di.ViewModelKey
 import dagger.Binds
 import dagger.Module

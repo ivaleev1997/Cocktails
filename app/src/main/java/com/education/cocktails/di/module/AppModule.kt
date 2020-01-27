@@ -2,9 +2,9 @@ package com.education.cocktails.di.module
 
 import android.app.Application
 import androidx.room.Room
-import com.education.cocktails.CocktailsRepository
+import com.education.cocktails.repository.CocktailsRepository
 import com.education.cocktails.db.CocktailsDb
-import com.education.cocktails.network.Api
+import com.education.cocktails.network.TheCocktailsApiService
 import com.education.cocktails.network.TheCocktailsApi
 import dagger.Module
 import dagger.Provides
@@ -16,7 +16,7 @@ class AppModule {
     @Provides
     @Singleton
     fun provideTheCocktailsAPi(): TheCocktailsApi {
-        return Api.API_SERVICE
+        return TheCocktailsApiService.API_SERVICE
     }
 
     @Provides
@@ -30,7 +30,10 @@ class AppModule {
     @Provides
     @Singleton
     fun provideCocktailsRepository(cocktailsDb: CocktailsDb, theCocktailsApi: TheCocktailsApi): CocktailsRepository {
-        return CocktailsRepository(cocktailsDb, theCocktailsApi)
+        return CocktailsRepository(
+            cocktailsDb,
+            theCocktailsApi
+        )
     }
 
 }

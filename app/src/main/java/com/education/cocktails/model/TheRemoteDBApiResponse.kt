@@ -1,4 +1,4 @@
-package com.education.cocktails.network
+package com.education.cocktails.model
 
 import com.education.cocktails.model.Cocktail
 

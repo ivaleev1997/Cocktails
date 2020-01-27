@@ -1,5 +1,6 @@
 package com.education.cocktails.network
 
+import com.education.cocktails.model.TheRemoteDBResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query

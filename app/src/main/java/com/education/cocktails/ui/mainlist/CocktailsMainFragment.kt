@@ -1,4 +1,4 @@
-package com.education.cocktails.ui
+package com.education.cocktails.ui.mainlist
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,8 +11,6 @@ import androidx.lifecycle.observe
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.education.cocktails.AppViewModelFactory
-import com.education.cocktails.CocktailsAdapter
-import com.education.cocktails.CocktailsMainFragmentViewModel
 import com.education.cocktails.R
 import com.education.cocktails.model.Cocktail
 import com.education.cocktails.network.Status

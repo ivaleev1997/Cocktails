@@ -3,7 +3,7 @@ package com.education.cocktails
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.education.cocktails.model.Cocktail
-import com.education.cocktails.network.Api
+import com.education.cocktails.network.TheCocktailsApiService
 import com.education.cocktails.network.TheCocktailsApi
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
@@ -31,7 +31,7 @@ class ExampleInstrumentedTest {
 
     @Before
     fun init() {
-        cocktailsApi = Api.API_SERVICE
+        cocktailsApi = TheCocktailsApiService.API_SERVICE
     }
 
     @Test

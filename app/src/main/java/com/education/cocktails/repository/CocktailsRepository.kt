@@ -1,4 +1,4 @@
-package com.education.cocktails
+package com.education.cocktails.repository
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -7,7 +7,7 @@ import com.education.cocktails.model.Cocktail
 import com.education.cocktails.network.NetworkBound
 import com.education.cocktails.network.Resource
 import com.education.cocktails.network.TheCocktailsApi
-import com.education.cocktails.network.TheRemoteDBResponse
+import com.education.cocktails.model.TheRemoteDBResponse
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async

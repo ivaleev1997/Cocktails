@@ -1,4 +1,4 @@
-package com.education.cocktails
+package com.education.cocktails.util
 
 import com.google.gson.FieldNamingStrategy
 

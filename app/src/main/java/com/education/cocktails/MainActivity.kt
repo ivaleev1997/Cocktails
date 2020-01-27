@@ -1,7 +1,7 @@
 package com.education.cocktails
 
 import android.os.Bundle
-import com.education.cocktails.ui.CocktailsMainFragment
+import com.education.cocktails.ui.mainlist.CocktailsMainFragment
 import dagger.android.support.DaggerAppCompatActivity
 
 class MainActivity : DaggerAppCompatActivity() {

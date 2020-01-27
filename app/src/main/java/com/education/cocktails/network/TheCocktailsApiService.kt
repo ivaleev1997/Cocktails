@@ -1,7 +1,7 @@
 package com.education.cocktails.network
 
 import com.education.cocktails.BuildConfig
-import com.education.cocktails.customPolicy
+import com.education.cocktails.util.customPolicy
 import com.google.gson.GsonBuilder
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import okhttp3.OkHttpClient
@@ -9,7 +9,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-object Api {
+object TheCocktailsApiService {
     val API_SERVICE: TheCocktailsApi by lazy {
         val okHttpBuilder = OkHttpClient.Builder().apply {
             if (BuildConfig.DEBUG)
