@@ -13,5 +13,14 @@
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_weight="1"/>
+
+<com.google.android.material.bottomnavigation.BottomNavigationView
+    android:id="@+id/mainBottomNavigation"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?android:attr/windowBackground"
+    android:layout_gravity="bottom"
+    style="@style/Widget.MaterialComponents.BottomNavigationView"
+    app:menu="@menu/nav_menu" />
 </LinearLayout>

@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Cocktails</string>
     <string name="cocktails_name">Cocktail Name</string>
+    <string name="title_main">cocktails</string>
+    <string name="title_favorites">favorites</string>
+    <string name="title_search">search</string>
 </resources>

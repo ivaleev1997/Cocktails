@@ -22,7 +22,6 @@ interface TheCocktailsApi {
     suspend fun getFullDetailByIdAsync(@Query("i") id: Long)
             : Response<TheRemoteDBResponse>
 
-    //TODO check response by this get-request: may be LiteResponse
     @GET("filter.php")
     suspend fun filterByCategoryAsync(@Query("c") category: String)
             : Response<TheRemoteDBResponse>

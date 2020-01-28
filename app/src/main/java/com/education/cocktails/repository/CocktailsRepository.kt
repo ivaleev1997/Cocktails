@@ -4,10 +4,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.education.cocktails.db.CocktailsDb
 import com.education.cocktails.model.Cocktail
+import com.education.cocktails.model.TheRemoteDBResponse
 import com.education.cocktails.network.NetworkBound
 import com.education.cocktails.network.Resource
 import com.education.cocktails.network.TheCocktailsApi
-import com.education.cocktails.model.TheRemoteDBResponse
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -28,7 +28,7 @@ class CocktailsRepository
                 if (!drinks.isNullOrEmpty())
                     cocktailDao.insertCocktails(drinks)
             }
-
+            //TODO Crate DataFreshnessChecker
             override fun shouldFetch(data: List<Cocktail>?): Boolean = data.isNullOrEmpty()
 
             override fun loadFromDb(): LiveData<List<Cocktail>> {
