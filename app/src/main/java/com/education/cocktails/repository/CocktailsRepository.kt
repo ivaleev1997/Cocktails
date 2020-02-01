@@ -48,4 +48,37 @@ class CocktailsRepository
                 return mutableLiveData
             }
         }.asLiveData()
+
+    fun loadCocktailById(id: Long): LiveData<Resource<List<Cocktail>>> {
+        return object : NetworkBound<TheRemoteDBResponse, List<Cocktail>>(currentCoroutineScope) {
+            override fun saveCallResult(item: TheRemoteDBResponse?) {
+                val drinks = item?.drinks
+                if (!drinks.isNullOrEmpty()) {
+                    cocktailDao.insertCocktails(drinks)
+                }
+            }
+
+            override fun shouldFetch(data: List<Cocktail>?): Boolean {
+                return data?.any {
+                    it.instructions == null
+                } ?: true
+            }
+
+            override fun loadFromDb(): LiveData<List<Cocktail>> {
+                return cocktailDao.getCocktailById(id)
+            }
+
+            override fun createCall(): LiveData<Response<TheRemoteDBResponse>> {
+                val mutableLiveData = MutableLiveData<Response<TheRemoteDBResponse>>()
+                currentCoroutineScope.launch {
+                    val response = async(Dispatchers.IO) {
+                        cocktailsApi.getFullDetailsByIdAsync(id)
+                    }
+                    mutableLiveData.value = response.await()
+                }
+
+                return mutableLiveData
+            }
+        }.asLiveData()
+    }
 }

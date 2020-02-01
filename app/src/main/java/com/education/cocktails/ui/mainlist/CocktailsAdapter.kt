@@ -1,6 +1,5 @@
 package com.education.cocktails.ui.mainlist
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,7 +12,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.education.cocktails.R
 import com.education.cocktails.model.Cocktail
 
-class CocktailsAdapter:
+class CocktailsAdapter(private val detailsCallback: DetailsCallback?):
     RecyclerView.Adapter<CocktailsAdapter.CocktailsRecyclerViewHolder>() {
 
     var cocktailsList = listOf<Cocktail>()
@@ -30,7 +29,8 @@ class CocktailsAdapter:
     override fun onBindViewHolder(holder: CocktailsRecyclerViewHolder, position: Int) {
         holder.bind(cocktailsList[position])
         holder.cardView.setOnClickListener {
-            Log.d("COCKTAIL_TAG", "clicked on ${cocktailsList[position].drink}")
+            //Log.d("COCKTAIL_TAG", "clicked on ${cocktailsList[position].drink}")
+            detailsCallback?.onSelected(cocktailsList[position].idDrink)
         }
     }
 
@@ -47,5 +47,9 @@ class CocktailsAdapter:
                 .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                 .into(imageView)
         }
+    }
+
+    interface DetailsCallback {
+        fun onSelected(id: Long)
     }
 }

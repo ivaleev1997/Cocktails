@@ -19,7 +19,7 @@ interface TheCocktailsApi {
             : Response<TheRemoteDBResponse>
 
     @GET("lookup.php")
-    suspend fun getFullDetailByIdAsync(@Query("i") id: Long)
+    suspend fun getFullDetailsByIdAsync(@Query("i") id: Long)
             : Response<TheRemoteDBResponse>
 
     @GET("filter.php")
