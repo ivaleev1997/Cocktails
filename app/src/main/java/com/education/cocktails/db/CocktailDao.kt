@@ -16,6 +16,12 @@ interface CocktailDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertCocktails(cocktailList: List<Cocktail>)
 
-    @Query("SELECT * FROM cocktail WHERE :id == cocktail.idDrink")
-    fun getCocktailById(id: Long): LiveData<List<Cocktail>>
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertCocktail(cocktail: Cocktail)
+
+    @Query("SELECT * FROM cocktail WHERE :id = cocktail.idDrink")
+    fun getCocktailById(id: Long): List<Cocktail>
+
+    @Query("SELECT * FROM cocktail WHERE cocktail.favorite = 1")
+    fun getFavoriteCocktails(): List<Cocktail>
 }

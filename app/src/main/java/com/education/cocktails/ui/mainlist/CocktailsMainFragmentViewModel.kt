@@ -16,6 +16,8 @@ class CocktailsMainFragmentViewModel
     private val viewModelJob = SupervisorJob()
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
+    var cocktailId: Long = 0L
+
     init {
         cocktailsRepository.currentCoroutineScope = uiScope
     }
@@ -24,8 +26,12 @@ class CocktailsMainFragmentViewModel
         return cocktailsRepository.loadCocktails()
     }
 
-    fun loadCocktailDetails(id: Long):LiveData<Resource<List<Cocktail>>> {
-        return cocktailsRepository.loadCocktailById(id)
+    fun loadCocktailDetails():LiveData<Resource<List<Cocktail>>> {
+        return cocktailsRepository.loadCocktailById(cocktailId)
+    }
+
+    fun setFavorite(flag: Boolean) {
+        cocktailsRepository.changeFavoriteFlag(cocktailId, flag)
     }
 
     override fun onCleared() {

@@ -25,8 +25,10 @@ class CocktailsRepository
         object : NetworkBound<TheRemoteDBResponse, List<Cocktail>>(currentCoroutineScope) {
             override fun saveCallResult(item: TheRemoteDBResponse?) {
                 val drinks = item?.drinks
-                if (!drinks.isNullOrEmpty())
-                    cocktailDao.insertCocktails(drinks)
+                if (!drinks.isNullOrEmpty()) {
+                    val favorites = cocktailDao.getFavoriteCocktails()
+                    cocktailDao.insertCocktails(updateNewCocktailsList(favorites, drinks))
+                }
             }
             //TODO Crate DataFreshnessChecker
             override fun shouldFetch(data: List<Cocktail>?): Boolean = data.isNullOrEmpty()
@@ -49,6 +51,18 @@ class CocktailsRepository
             }
         }.asLiveData()
 
+    private fun updateNewCocktailsList(favorites: List<Cocktail>, newData: List<Cocktail>): List<Cocktail> {
+        val drinks = newData.toMutableList()
+        favorites.forEach {favorite ->
+            drinks.map {newData ->
+                if (newData.idDrink == favorite.idDrink)
+                    newData.favorite = favorite.favorite
+            }
+        }
+
+        return drinks
+    }
+
     fun loadCocktailById(id: Long): LiveData<Resource<List<Cocktail>>> {
         return object : NetworkBound<TheRemoteDBResponse, List<Cocktail>>(currentCoroutineScope) {
             override fun saveCallResult(item: TheRemoteDBResponse?) {
@@ -65,7 +79,15 @@ class CocktailsRepository
             }
 
             override fun loadFromDb(): LiveData<List<Cocktail>> {
-                return cocktailDao.getCocktailById(id)
+                val mutableLiveData = MutableLiveData<List<Cocktail>>()
+                currentCoroutineScope.launch {
+                    val cocktail = async(Dispatchers.IO) {
+                        cocktailDao.getCocktailById(id)
+                    }
+                    mutableLiveData.value = cocktail.await()
+                }
+
+                return mutableLiveData
             }
 
             override fun createCall(): LiveData<Response<TheRemoteDBResponse>> {
@@ -80,5 +102,14 @@ class CocktailsRepository
                 return mutableLiveData
             }
         }.asLiveData()
+    }
+
+    fun changeFavoriteFlag(id: Long, flag: Boolean) {
+        currentCoroutineScope.launch(Dispatchers.IO) {
+            val cocktailList = cocktailDao.getCocktailById(id)
+            if (cocktailList.isNotEmpty()) {
+                cocktailDao.insertCocktail(cocktailList.first().apply { favorite = flag })
+            }
+        }
     }
 }

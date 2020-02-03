@@ -1,7 +1,8 @@
 package com.education.cocktails.network
 
 import com.education.cocktails.BuildConfig
-import com.education.cocktails.util.customPolicy
+import com.education.cocktails.model.Cocktail
+import com.education.cocktails.util.jsonDeserializer
 import com.google.gson.GsonBuilder
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import okhttp3.OkHttpClient
@@ -18,7 +19,7 @@ object TheCocktailsApiService {
                 })
         }
         val okHttpClient = okHttpBuilder.build()
-        val gson = GsonBuilder().setFieldNamingStrategy(customPolicy).create()
+        val gson = GsonBuilder().registerTypeAdapter(Cocktail::class.java, jsonDeserializer).create()
 
         return@lazy Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create(gson))
