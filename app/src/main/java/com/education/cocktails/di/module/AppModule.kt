@@ -35,5 +35,4 @@ class AppModule {
             theCocktailsApi
         )
     }
-
 }

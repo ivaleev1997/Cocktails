@@ -14,7 +14,6 @@ import com.bumptech.glide.Glide
 import com.education.cocktails.AppViewModelFactory
 import com.education.cocktails.R
 import com.education.cocktails.network.Status
-import com.education.cocktails.ui.mainlist.CocktailsMainFragmentViewModel
 import dagger.android.support.DaggerFragment
 import javax.inject.Inject
 
@@ -36,7 +35,7 @@ class DetailsFragment : DaggerFragment() {
     @Inject
     lateinit var appViewModelFactory: AppViewModelFactory
 
-    private val cocktailsMainFragmentViewModel: CocktailsMainFragmentViewModel by viewModels {
+    private val detailsViewModel: DetailsViewModel by viewModels {
         appViewModelFactory
     }
 
@@ -66,9 +65,9 @@ class DetailsFragment : DaggerFragment() {
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.isNestedScrollingEnabled = false
         recyclerView.adapter = adapter
-        cocktailsMainFragmentViewModel.cocktailId = getCocktailIdFromArguments()
+        detailsViewModel.cocktailId = getCocktailIdFromArguments()
 
-        cocktailsMainFragmentViewModel
+        detailsViewModel
             .loadCocktailDetails()
             .observe(viewLifecycleOwner) { resource ->
                 if (resource.status == Status.SUCCESS && !resource.data.isNullOrEmpty()) {
@@ -87,12 +86,12 @@ class DetailsFragment : DaggerFragment() {
             if (it.tag == getString(R.string.not_clicked_tag)) {
                 favoriteImageView.setImageResource(R.drawable.ic_favorite_clicked)
                 it.tag = getString(R.string.clicked_tag)
-                cocktailsMainFragmentViewModel.setFavorite(true)
+                detailsViewModel.setFavorite(true)
             }
             else {
                 favoriteImageView.setImageResource(R.drawable.ic_favorite_not_clicked)
                 it.tag = getString(R.string.not_clicked_tag)
-                cocktailsMainFragmentViewModel.setFavorite(false)
+                detailsViewModel.setFavorite(false)
             }
         }
     }

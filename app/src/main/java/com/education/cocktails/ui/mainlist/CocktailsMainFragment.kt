@@ -34,7 +34,7 @@ class CocktailsMainFragment: DaggerFragment(), CocktailsAdapter.DetailsCallback 
     @Inject
     lateinit var appViewModelFactory: AppViewModelFactory
 
-    private val cocktailsMainFragmentViewModel: CocktailsMainFragmentViewModel by viewModels {
+    private val cocktailsMainViewModel: CocktailsMainViewModel by viewModels {
         appViewModelFactory
     }
 
@@ -53,7 +53,7 @@ class CocktailsMainFragment: DaggerFragment(), CocktailsAdapter.DetailsCallback 
         cocktailsAdapter = CocktailsAdapter(this)
         recyclerView.adapter = cocktailsAdapter
 
-        cocktailsMainFragmentViewModel.loadCocktails().observe(viewLifecycleOwner) {
+        cocktailsMainViewModel.loadCocktails().observe(viewLifecycleOwner) {
             resource ->
             fun setData(cocktails: List<Cocktail>?): Boolean {
                 var result = false

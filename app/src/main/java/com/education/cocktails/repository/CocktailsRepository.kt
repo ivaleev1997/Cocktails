@@ -18,11 +18,10 @@ import javax.inject.Inject
 class CocktailsRepository
 @Inject constructor(cocktailsDb: CocktailsDb, val cocktailsApi: TheCocktailsApi) {
 
-    lateinit var currentCoroutineScope: CoroutineScope
     private val cocktailDao = cocktailsDb.getCocktailDao()
 
-    fun loadCocktails(): LiveData<Resource<List<Cocktail>>> =
-        object : NetworkBound<TheRemoteDBResponse, List<Cocktail>>(currentCoroutineScope) {
+    fun loadCocktails(coroutineScope: CoroutineScope): LiveData<Resource<List<Cocktail>>> =
+        object : NetworkBound<TheRemoteDBResponse, List<Cocktail>>(coroutineScope) {
             override fun saveCallResult(item: TheRemoteDBResponse?) {
                 val drinks = item?.drinks
                 if (!drinks.isNullOrEmpty()) {
@@ -39,7 +38,7 @@ class CocktailsRepository
 
             override fun createCall(): LiveData<Response<TheRemoteDBResponse>> {
                 val mutableLiveData = MutableLiveData<Response<TheRemoteDBResponse>>()
-                currentCoroutineScope.launch {
+                coroutineScope.launch {
                     val response = async(Dispatchers.IO) {
                         cocktailsApi.filterByCategoryAsync("Cocktail")
                     }
@@ -63,8 +62,8 @@ class CocktailsRepository
         return drinks
     }
 
-    fun loadCocktailById(id: Long): LiveData<Resource<List<Cocktail>>> {
-        return object : NetworkBound<TheRemoteDBResponse, List<Cocktail>>(currentCoroutineScope) {
+    fun loadCocktailById(id: Long, coroutineScope: CoroutineScope): LiveData<Resource<List<Cocktail>>> {
+        return object : NetworkBound<TheRemoteDBResponse, List<Cocktail>>(coroutineScope) {
             override fun saveCallResult(item: TheRemoteDBResponse?) {
                 val drinks = item?.drinks
                 if (!drinks.isNullOrEmpty()) {
@@ -80,7 +79,7 @@ class CocktailsRepository
 
             override fun loadFromDb(): LiveData<List<Cocktail>> {
                 val mutableLiveData = MutableLiveData<List<Cocktail>>()
-                currentCoroutineScope.launch {
+                coroutineScope.launch {
                     val cocktail = async(Dispatchers.IO) {
                         cocktailDao.getCocktailById(id)
                     }
@@ -92,7 +91,7 @@ class CocktailsRepository
 
             override fun createCall(): LiveData<Response<TheRemoteDBResponse>> {
                 val mutableLiveData = MutableLiveData<Response<TheRemoteDBResponse>>()
-                currentCoroutineScope.launch {
+                coroutineScope.launch {
                     val response = async(Dispatchers.IO) {
                         cocktailsApi.getFullDetailsByIdAsync(id)
                     }
@@ -104,8 +103,8 @@ class CocktailsRepository
         }.asLiveData()
     }
 
-    fun changeFavoriteFlag(id: Long, flag: Boolean) {
-        currentCoroutineScope.launch(Dispatchers.IO) {
+    fun changeFavoriteFlag(id: Long, flag: Boolean, coroutineScope: CoroutineScope) {
+        coroutineScope.launch(Dispatchers.IO) {
             val cocktailList = cocktailDao.getCocktailById(id)
             if (cocktailList.isNotEmpty()) {
                 cocktailDao.insertCocktail(cocktailList.first().apply { favorite = flag })
