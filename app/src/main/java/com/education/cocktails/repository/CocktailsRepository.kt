@@ -111,4 +111,17 @@ class CocktailsRepository
             }
         }
     }
+
+    fun loadFavoriteCocktails(coroutineScope: CoroutineScope): LiveData<List<Cocktail>> {
+        val mutableLiveData = MutableLiveData<List<Cocktail>>()
+        coroutineScope.launch {
+            val listFavorites = async(Dispatchers.IO) {
+                cocktailDao.getFavoriteCocktails()
+            }
+
+            mutableLiveData.value = listFavorites.await()
+        }
+
+        return mutableLiveData
+    }
 }

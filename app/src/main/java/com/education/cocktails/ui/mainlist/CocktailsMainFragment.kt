@@ -13,14 +13,14 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.education.cocktails.APP_TAG
 import com.education.cocktails.AppViewModelFactory
+import com.education.cocktails.GRID_LAYOUT_SPAN_COUNT
 import com.education.cocktails.R
 import com.education.cocktails.model.Cocktail
 import com.education.cocktails.network.Status
-import com.education.cocktails.ui.mainlist.details.DetailsFragment
-import dagger.android.support.DaggerFragment
+import com.education.cocktails.ui.details.DetailsTransitionFragment
 import javax.inject.Inject
 
-class CocktailsMainFragment: DaggerFragment(), CocktailsAdapter.DetailsCallback {
+class CocktailsMainFragment: DetailsTransitionFragment() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var cocktailsAdapter: CocktailsAdapter
     private lateinit var progressBar: ProgressBar
@@ -48,9 +48,14 @@ class CocktailsMainFragment: DaggerFragment(), CocktailsAdapter.DetailsCallback 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         progressBar = view.findViewById(R.id.load_progressBar)
-        recyclerView = view.findViewById(R.id.cocktails_main_recycler)
-        recyclerView.layoutManager = GridLayoutManager(context, 2)
-        cocktailsAdapter = CocktailsAdapter(this)
+        recyclerView = view.findViewById(R.id.cocktails_list_recycler)
+        recyclerView.layoutManager = GridLayoutManager(context, GRID_LAYOUT_SPAN_COUNT)
+        cocktailsAdapter = CocktailsAdapter { idDrink ->
+            //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            Log.d(APP_TAG, "onSelected id: $id")
+            startTransition(activity, idDrink)
+        }
+
         recyclerView.adapter = cocktailsAdapter
 
         cocktailsMainViewModel.loadCocktails().observe(viewLifecycleOwner) {
@@ -85,20 +90,6 @@ class CocktailsMainFragment: DaggerFragment(), CocktailsAdapter.DetailsCallback 
                         Toast.makeText(context, "Loading data..", Toast.LENGTH_SHORT).show()
                     }
             }
-        }
-    }
-
-    override fun onSelected(id: Long) {
-        //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-        Log.d(APP_TAG, "onSelected id: $id")
-
-        val fragment = DetailsFragment.getInstance(id)
-        val fragmentManager = activity?.supportFragmentManager
-        val fragmentTransaction = fragmentManager?.beginTransaction()
-        if (fragmentTransaction != null) {
-            fragmentTransaction.replace(R.id.fragment_container, fragment, "details")
-            fragmentTransaction.addToBackStack("Details")
-            fragmentTransaction.commit()
         }
     }
 }

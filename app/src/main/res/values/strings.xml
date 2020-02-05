@@ -17,5 +17,6 @@
     <string name="measure_stub"><![CDATA[&#189; oz]]></string>
     <string name="clicked_tag">yes</string>
     <string name="not_clicked_tag">no</string>
+    <string name="no_favorite">No favorite cocktails..</string>
 
 </resources>

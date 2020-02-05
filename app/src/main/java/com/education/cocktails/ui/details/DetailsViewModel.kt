@@ -1,4 +1,4 @@
-package com.education.cocktails.ui.mainlist.details
+package com.education.cocktails.ui.details
 
 import androidx.lifecycle.LiveData
 import com.education.cocktails.model.Cocktail

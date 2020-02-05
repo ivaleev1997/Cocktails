@@ -1,4 +1,4 @@
-package com.education.cocktails.ui.mainlist.details
+package com.education.cocktails.ui.details
 
 import android.os.Bundle
 import android.view.LayoutInflater

@@ -12,13 +12,14 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.education.cocktails.R
 import com.education.cocktails.model.Cocktail
 
-class CocktailsAdapter(private val detailsCallback: DetailsCallback?):
+class CocktailsAdapter(
+    private val selectCallback: (Long) -> Unit):
     RecyclerView.Adapter<CocktailsAdapter.CocktailsRecyclerViewHolder>() {
 
     var cocktailsList = listOf<Cocktail>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CocktailsRecyclerViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.cocktails_main_item, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.cocktails_list_item, parent, false)
 
         return CocktailsRecyclerViewHolder(view)
     }
@@ -30,7 +31,7 @@ class CocktailsAdapter(private val detailsCallback: DetailsCallback?):
         holder.bind(cocktailsList[position])
         holder.cardView.setOnClickListener {
             //Log.d("COCKTAIL_TAG", "clicked on ${cocktailsList[position].drink}")
-            detailsCallback?.onSelected(cocktailsList[position].idDrink)
+            selectCallback(cocktailsList[position].idDrink)
         }
     }
 
@@ -43,13 +44,9 @@ class CocktailsAdapter(private val detailsCallback: DetailsCallback?):
         fun bind(currentCocktail: Cocktail) {
             textView.text = currentCocktail.drink
             Glide.with(imageView)
-                .load(currentCocktail.image+ "/preview")
+                .load(currentCocktail.image)
                 .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                 .into(imageView)
         }
-    }
-
-    interface DetailsCallback {
-        fun onSelected(id: Long)
     }
 }
