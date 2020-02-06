@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,6 +16,8 @@ import com.bumptech.glide.Glide
 import com.education.cocktails.AppViewModelFactory
 import com.education.cocktails.R
 import com.education.cocktails.network.Status
+import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.appbar.CollapsingToolbarLayout
 import dagger.android.support.DaggerFragment
 import javax.inject.Inject
 
@@ -45,14 +49,47 @@ class DetailsFragment : DaggerFragment() {
     private lateinit var alcoholStatusTextView: TextView
     private lateinit var favoriteImageView: ImageView
     private lateinit var recyclerView: RecyclerView
+    private lateinit var appBar: AppBarLayout
+    private lateinit var collapsingToolbarLayout: CollapsingToolbarLayout
+    private var currentTitle: String = " "
     private val adapter: IngredientsAdapter = IngredientsAdapter()
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_cocktail_details, container, false)
+        val view = inflater.inflate(R.layout.fragment_cocktail_details, container, false)
+        val toolbar = view.findViewById<Toolbar>(R.id.toolbar)
+        appBar = view.findViewById(R.id.details_appbar)
+        collapsingToolbarLayout = view.findViewById(R.id.collapsing_toolbar)
+        setAppBarListener()
+        if(activity is AppCompatActivity) {
+            val act = activity as AppCompatActivity
+            act.setSupportActionBar(toolbar)
+            act.supportActionBar?.setDisplayHomeAsUpEnabled(true)
+            act.supportActionBar?.title = " "
+        }
+
+        return view
+    }
+
+    private fun setAppBarListener() {
+        var isShow = true
+        var scrollRange = -1
+        appBar.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { barLayout, verticalOffset ->
+            if (scrollRange == -1){
+                scrollRange = barLayout?.totalScrollRange!!
+            }
+            if (scrollRange + verticalOffset == 0){
+                collapsingToolbarLayout.title = currentTitle
+                isShow = true
+            } else if (isShow){
+                collapsingToolbarLayout.title = " " //careful there should a space between double quote otherwise it wont work
+                isShow = false
+            }
+        })
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -77,7 +114,7 @@ class DetailsFragment : DaggerFragment() {
                     instructionsTextView.text = resource.data[0].instructions
                     adapter.ingredientsWithMeasure = resource.data[0].ingredientWithMeasure
                     adapter.notifyDataSetChanged()
-
+                    currentTitle = resource.data[0].drink
                     setFavoriteImageView(resource.data[0].favorite)
                 }
             }

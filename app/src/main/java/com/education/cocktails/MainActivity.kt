@@ -1,6 +1,8 @@
 package com.education.cocktails
 
 import android.os.Bundle
+import android.util.Log
+import android.view.MenuItem
 import androidx.fragment.app.Fragment
 import com.education.cocktails.ui.favorites.FavoritesFragment
 import com.education.cocktails.ui.mainlist.CocktailsMainFragment
@@ -41,5 +43,14 @@ class MainActivity : DaggerAppCompatActivity() {
         val fragmentTransaction = supportFragmentManager.beginTransaction()
         fragmentTransaction.replace(R.id.fragment_container, fragment)
         fragmentTransaction.commit()
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        Log.d(APP_TAG, "on back pressed")
+        if (item.itemId == android.R.id.home) {
+            onBackPressed()
+            return true
+        }
+        return super.onOptionsItemSelected(item)
     }
 }
