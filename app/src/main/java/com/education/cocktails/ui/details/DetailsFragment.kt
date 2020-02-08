@@ -1,7 +1,9 @@
 package com.education.cocktails.ui.details
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -13,6 +15,7 @@ import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.education.cocktails.APP_TAG
 import com.education.cocktails.AppViewModelFactory
 import com.education.cocktails.R
 import com.education.cocktails.network.Status
@@ -61,13 +64,14 @@ class DetailsFragment : DaggerFragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_cocktail_details, container, false)
-        val toolbar = view.findViewById<Toolbar>(R.id.toolbar)
+        val toolbar = view.findViewById<Toolbar>(R.id.details_toolbar)
         appBar = view.findViewById(R.id.details_appbar)
         collapsingToolbarLayout = view.findViewById(R.id.collapsing_toolbar)
         setAppBarListener()
         if(activity is AppCompatActivity) {
             val act = activity as AppCompatActivity
             act.setSupportActionBar(toolbar)
+            setHasOptionsMenu(true)
             act.supportActionBar?.setDisplayHomeAsUpEnabled(true)
             act.supportActionBar?.title = " "
         }
@@ -141,4 +145,10 @@ class DetailsFragment : DaggerFragment() {
     }
 
     private fun getCocktailIdFromArguments(): Long = arguments?.getLong(BUNDLE_KEY) ?: 0L
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        Log.d(APP_TAG, "onOptionsItemSelected")
+
+        return true
+    }
 }

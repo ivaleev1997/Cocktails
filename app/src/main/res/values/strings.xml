@@ -19,4 +19,9 @@
     <string name="not_clicked_tag">no</string>
     <string name="no_favorite">No favorite cocktails..</string>
 
+    <string name="filter_title">filter</string>
+    <string name="settings">Settings</string>
+    <string name="about">About</string>
+    <string name="no_alcohol">No alcohol</string>
+
 </resources>

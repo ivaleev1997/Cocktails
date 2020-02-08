@@ -2,11 +2,11 @@ package com.education.cocktails.ui.mainlist
 
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
 import androidx.recyclerview.widget.GridLayoutManager
@@ -24,6 +24,7 @@ class CocktailsMainFragment: DetailsTransitionFragment() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var cocktailsAdapter: CocktailsAdapter
     private lateinit var progressBar: ProgressBar
+    private lateinit var toolbar: Toolbar
 
     companion object {
         fun newInstance(): CocktailsMainFragment {
@@ -43,7 +44,13 @@ class CocktailsMainFragment: DetailsTransitionFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_cocktails_main, container, false)
+        val view = inflater.inflate(R.layout.fragment_cocktails_main, container, false)
+        toolbar = view.findViewById(R.id.main_toolbar)
+
+        (this.activity as AppCompatActivity).setSupportActionBar(toolbar)
+        setHasOptionsMenu(true)
+
+        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -91,5 +98,25 @@ class CocktailsMainFragment: DetailsTransitionFragment() {
                     }
             }
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.main_list_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.alcohol_menu -> {
+                item.isChecked = true
+
+                true
+            }
+            R.id.no_alcohol_menu -> {
+                item.isChecked = true
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+
     }
 }
