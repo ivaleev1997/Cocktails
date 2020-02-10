@@ -13,7 +13,7 @@
     <item
         android:id="@+id/filter_menu"
         app:showAsAction="always"
-        android:icon="@drawable/ic_filter"
+        android:icon="@drawable/ic_filter_light"
         android:title="@string/filter_title">
 
         <menu>
@@ -28,5 +28,4 @@
             </group>
         </menu>
     </item>
-
 </menu>

@@ -23,5 +23,7 @@
     <string name="settings">Settings</string>
     <string name="about">About</string>
     <string name="no_alcohol">No alcohol</string>
+    <string name="search">Search</string>
 
+    <string name="search_query_hint">cocktail\'s name or ingredient</string>
 </resources>

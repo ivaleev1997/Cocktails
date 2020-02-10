@@ -12,7 +12,7 @@
     android:layout_width="match_parent"
     android:layout_height="330dp"
     android:fitsSystemWindows="true"
-    android:theme="@style/ThemeOverlay.MaterialComponents.ActionBar">
+    app:theme="@style/ThemeOverlay.AppCompat.Dark">
 
     <com.google.android.material.appbar.CollapsingToolbarLayout
         android:id="@+id/collapsing_toolbar"
@@ -36,20 +36,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
+                android:transitionName="cocktailTransition"
                 android:fitsSystemWindows="true"
                 app:layout_collapseMode="parallax"/>
-
-            <ImageView
-                android:id="@+id/favorite_image"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:clickable="true"
-                android:src="@drawable/ic_favorite_not_clicked"
-                android:layout_gravity="top|end"
-                android:layout_margin="12dp"
-                android:tag="@string/not_clicked_tag"
-                android:tint="@color/white"
-                android:focusable="true" />
         </FrameLayout>
 
         <androidx.appcompat.widget.Toolbar
@@ -57,7 +46,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             app:layout_collapseMode="pin"
-            android:theme="@style/Platform.MaterialComponents.Light"/>
+            app:theme="@style/ThemeOverlay.AppCompat.Dark"/>
     </com.google.android.material.appbar.CollapsingToolbarLayout>
 </com.google.android.material.appbar.AppBarLayout>
 

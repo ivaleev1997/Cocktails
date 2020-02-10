@@ -4,8 +4,8 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.fragment.app.Fragment
-import com.education.cocktails.ui.favorites.FavoritesFragment
-import com.education.cocktails.ui.mainlist.CocktailsMainFragment
+import com.education.cocktails.ui.favorites.FavoritesFragmentShared
+import com.education.cocktails.ui.mainlist.CocktailsMainFragmentShared
 import com.education.cocktails.ui.search.SearchFragment
 import dagger.android.support.DaggerAppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
@@ -19,12 +19,12 @@ class MainActivity : DaggerAppCompatActivity() {
         mainBottomNavigation.setOnNavigationItemSelectedListener {
             when(it.itemId) {
                 R.id.navigation_main -> {
-                    startMainFragment(CocktailsMainFragment.newInstance())
+                    startMainFragment(CocktailsMainFragmentShared.newInstance())
                     true
                 }
 
                 R.id.navigation_favorites -> {
-                    startMainFragment(FavoritesFragment.getInstance())
+                    startMainFragment(FavoritesFragmentShared.getInstance())
                     true
                 }
 

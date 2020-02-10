@@ -9,17 +9,18 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.transition.Fade
 import com.education.cocktails.AppViewModelFactory
 import com.education.cocktails.GRID_LAYOUT_SPAN_COUNT
 import com.education.cocktails.R
-import com.education.cocktails.ui.details.DetailsTransitionFragment
+import com.education.cocktails.ui.details.DetailsSharedTransitionFragment
 import com.education.cocktails.ui.mainlist.CocktailsAdapter
 import javax.inject.Inject
 
-class FavoritesFragment: DetailsTransitionFragment() {
+class FavoritesFragmentShared: DetailsSharedTransitionFragment() {
     companion object {
-        fun getInstance(): FavoritesFragment {
-            return FavoritesFragment()
+        fun getInstance(): FavoritesFragmentShared {
+            return FavoritesFragmentShared()
         }
     }
 
@@ -46,8 +47,10 @@ class FavoritesFragment: DetailsTransitionFragment() {
         noFavoritesTextView = view.findViewById(R.id.no_favorite_textview)
         recyclerView = view.findViewById(R.id.cocktails_list_recycler)
         recyclerView.layoutManager = GridLayoutManager(context, GRID_LAYOUT_SPAN_COUNT)
-        adapter = CocktailsAdapter { idDrink ->
-            startTransition(activity, idDrink)
+        adapter = CocktailsAdapter { cocktail, image ->
+            startTransition(activity, cocktail, image) {
+                exitTransition = Fade()
+            }
         }
         recyclerView.adapter = adapter
 

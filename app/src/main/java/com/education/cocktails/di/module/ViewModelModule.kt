@@ -7,6 +7,7 @@ import com.education.cocktails.di.ViewModelKey
 import com.education.cocktails.ui.details.DetailsViewModel
 import com.education.cocktails.ui.favorites.FavoritesViewModel
 import com.education.cocktails.ui.mainlist.CocktailsMainViewModel
+import com.education.cocktails.ui.search.SearchViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -31,4 +32,9 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(FavoritesViewModel::class)
     abstract fun bindFavoritesViewModel(favoritesViewModel: FavoritesViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(SearchViewModel::class)
+    abstract fun bindSearchViewModel(searchViewModel: SearchViewModel):ViewModel
 }

@@ -1,7 +1,6 @@
 package com.education.cocktails.ui.mainlist
 
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.ProgressBar
 import android.widget.Toast
@@ -11,24 +10,24 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.education.cocktails.APP_TAG
+import androidx.transition.Fade
 import com.education.cocktails.AppViewModelFactory
 import com.education.cocktails.GRID_LAYOUT_SPAN_COUNT
 import com.education.cocktails.R
 import com.education.cocktails.model.Cocktail
 import com.education.cocktails.network.Status
-import com.education.cocktails.ui.details.DetailsTransitionFragment
+import com.education.cocktails.ui.details.DetailsSharedTransitionFragment
 import javax.inject.Inject
 
-class CocktailsMainFragment: DetailsTransitionFragment() {
+class CocktailsMainFragmentShared: DetailsSharedTransitionFragment() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var cocktailsAdapter: CocktailsAdapter
     private lateinit var progressBar: ProgressBar
     private lateinit var toolbar: Toolbar
 
     companion object {
-        fun newInstance(): CocktailsMainFragment {
-            return CocktailsMainFragment()
+        fun newInstance(): CocktailsMainFragmentShared {
+            return CocktailsMainFragmentShared()
         }
     }
 
@@ -57,10 +56,10 @@ class CocktailsMainFragment: DetailsTransitionFragment() {
         progressBar = view.findViewById(R.id.load_progressBar)
         recyclerView = view.findViewById(R.id.cocktails_list_recycler)
         recyclerView.layoutManager = GridLayoutManager(context, GRID_LAYOUT_SPAN_COUNT)
-        cocktailsAdapter = CocktailsAdapter { idDrink ->
-            //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            Log.d(APP_TAG, "onSelected id: $id")
-            startTransition(activity, idDrink)
+        cocktailsAdapter = CocktailsAdapter { cocktail, image ->
+            startTransition(activity, cocktail, image) {
+                exitTransition = Fade()
+            }
         }
 
         recyclerView.adapter = cocktailsAdapter
@@ -92,10 +91,7 @@ class CocktailsMainFragment: DetailsTransitionFragment() {
 
                 Status.SUCCESS -> setData(resource.data)
 
-                Status.LOADING ->
-                    if (!setData(resource.data)) {
-                        Toast.makeText(context, "Loading data..", Toast.LENGTH_SHORT).show()
-                    }
+                Status.LOADING -> {}
             }
         }
     }
