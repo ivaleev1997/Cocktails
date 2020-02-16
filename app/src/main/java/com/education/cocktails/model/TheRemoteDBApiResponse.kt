@@ -1,7 +1,9 @@
 package com.education.cocktails.model
 
-import com.education.cocktails.model.Cocktail
-
-data class TheRemoteDBResponse(
+data class TheRemoteDBCocktailsResponse(
     val drinks: List<Cocktail>
+)
+
+data class TheRemoteDBIngredientsResponse(
+    val drinks: List<CocktailsIngredient>
 )

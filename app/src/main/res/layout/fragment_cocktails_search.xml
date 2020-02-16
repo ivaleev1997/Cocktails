@@ -4,25 +4,22 @@
     android:id="@+id/search_coordinator"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent" >
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/search_appbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:theme="@style/ThemeOverlay.AppCompat.Dark">
+        android:layout_height="wrap_content" >
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/search_toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:layout_scrollFlags="scroll|enterAlways"
-            app:theme="@style/Theme.MyTheme"/>
+            android:background="?attr/colorPrimary" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <include layout="@layout/recycler_list"/>
+    <include layout="@layout/recycler_list" />
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -17,10 +17,10 @@ import com.education.cocktails.ui.details.DetailsSharedTransitionFragment
 import com.education.cocktails.ui.mainlist.CocktailsAdapter
 import javax.inject.Inject
 
-class FavoritesFragmentShared: DetailsSharedTransitionFragment() {
+class FavoritesFragment: DetailsSharedTransitionFragment() {
     companion object {
-        fun getInstance(): FavoritesFragmentShared {
-            return FavoritesFragmentShared()
+        fun getInstance(): FavoritesFragment {
+            return FavoritesFragment()
         }
     }
 

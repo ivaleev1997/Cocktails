@@ -41,7 +41,7 @@ val jsonDeserializer =
             for (it in (1..15)) {
                 val ingr = jsonObject.get("strIngredient$it")
                 val meas = jsonObject.get("strMeasure$it")
-                if (ingr.isJsonNull)
+                if (ingr.isJsonNull || ingr.asString.isEmpty())
                     break
 
                 if (meas.isJsonNull)

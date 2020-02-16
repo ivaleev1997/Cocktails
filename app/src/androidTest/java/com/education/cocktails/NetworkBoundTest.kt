@@ -5,7 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.education.cocktails.network.NetworkBound
+import com.education.cocktails.repository.NetworkBound
 import com.education.cocktails.network.Resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -46,14 +46,14 @@ class NetworkBoundTest {
 
     private val fetchedOnce = AtomicBoolean(false)
 
-    private lateinit var networkBound: NetworkBound<A,A>
+    private lateinit var networkBound: NetworkBound<A, A>
 
     private data class A(var value: Int)
 
     @Before
     fun init() {
         Dispatchers.setMain(testDispatcher)
-        networkBound = object : NetworkBound<A,A>(testScope) {
+        networkBound = object : NetworkBound<A, A>(testScope) {
             override fun saveCallResult(item: A?) {
                 handleSaveCallResult(item)
             }

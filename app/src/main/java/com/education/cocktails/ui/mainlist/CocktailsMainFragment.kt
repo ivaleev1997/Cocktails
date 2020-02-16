@@ -2,7 +2,6 @@ package com.education.cocktails.ui.mainlist
 
 import android.os.Bundle
 import android.view.*
-import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -19,15 +18,15 @@ import com.education.cocktails.network.Status
 import com.education.cocktails.ui.details.DetailsSharedTransitionFragment
 import javax.inject.Inject
 
-class CocktailsMainFragmentShared: DetailsSharedTransitionFragment() {
+class CocktailsMainFragment: DetailsSharedTransitionFragment() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var cocktailsAdapter: CocktailsAdapter
-    private lateinit var progressBar: ProgressBar
+    //private lateinit var progressBar: ProgressBar
     private lateinit var toolbar: Toolbar
 
     companion object {
-        fun newInstance(): CocktailsMainFragmentShared {
-            return CocktailsMainFragmentShared()
+        fun newInstance(): CocktailsMainFragment {
+            return CocktailsMainFragment()
         }
     }
 
@@ -53,7 +52,7 @@ class CocktailsMainFragmentShared: DetailsSharedTransitionFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        progressBar = view.findViewById(R.id.load_progressBar)
+        //progressBar = view.findViewById(R.id.load_progressBar)
         recyclerView = view.findViewById(R.id.cocktails_list_recycler)
         recyclerView.layoutManager = GridLayoutManager(context, GRID_LAYOUT_SPAN_COUNT)
         cocktailsAdapter = CocktailsAdapter { cocktail, image ->
@@ -64,18 +63,17 @@ class CocktailsMainFragmentShared: DetailsSharedTransitionFragment() {
 
         recyclerView.adapter = cocktailsAdapter
 
-        cocktailsMainViewModel.loadCocktails().observe(viewLifecycleOwner) {
-            resource ->
+        cocktailsMainViewModel.loadCocktails().observe(viewLifecycleOwner) { resource ->
             fun setData(cocktails: List<Cocktail>?): Boolean {
                 var result = false
                 if (!cocktails.isNullOrEmpty()) {
                     cocktailsAdapter.cocktailsList = cocktails
-                    //TODO add diffutil
+                    //TODO add diffUtil
                     cocktailsAdapter.notifyDataSetChanged()
 
                     if (recyclerView.visibility == View.GONE) {
                         recyclerView.visibility = View.VISIBLE
-                        progressBar.visibility = View.GONE
+                        //progressBar.visibility = View.GONE
                     }
 
                     result = true
@@ -86,12 +84,10 @@ class CocktailsMainFragmentShared: DetailsSharedTransitionFragment() {
             when(resource.status) {
                 Status.ERROR -> {
                     Toast.makeText(context, resource.message, Toast.LENGTH_SHORT).show()
-                    progressBar.visibility = View.GONE
+                    //progressBar.visibility = View.GONE
                 }
 
-                Status.SUCCESS -> setData(resource.data)
-
-                Status.LOADING -> {}
+                else -> setData(resource.data)
             }
         }
     }

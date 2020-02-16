@@ -46,7 +46,7 @@ class CocktailsAdapter(
             textView.text = currentCocktail.drink
             Glide.with(imageView)
                 .load(currentCocktail.image)
-                .apply(RequestOptions.centerCropTransform().dontTransform().onlyRetrieveFromCache(true))
+                .apply(RequestOptions.centerCropTransform().dontTransform())
                 .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                 .into(imageView)
         }
