@@ -1,9 +1,10 @@
-package com.education.cocktails.network
+package com.education.cocktails.repository
 
 import androidx.annotation.MainThread
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
+import com.education.cocktails.network.Resource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -16,7 +17,8 @@ abstract class NetworkBound<RequestType, ResultType>
 
     init {
         println(Thread.currentThread())
-        result.value = Resource.loading(null)
+        result.value =
+            Resource.loading(null)
 
         val dbSource = loadFromDb()
 
@@ -26,7 +28,11 @@ abstract class NetworkBound<RequestType, ResultType>
                 fetchFromNetwork(dbSource)
             } else {
                 result.addSource(dbSource) { dbData ->
-                    setValue(Resource.success(dbData))
+                    setValue(
+                        Resource.success(
+                            dbData
+                        )
+                    )
                 }
             }
         }
@@ -43,7 +49,11 @@ abstract class NetworkBound<RequestType, ResultType>
         val apiResponse = createCall()
 
         result.addSource(dbSource) { data ->
-            setValue(Resource.loading(data))
+            setValue(
+                Resource.loading(
+                    data
+                )
+            )
         }
 
         result.addSource(apiResponse) { response ->
@@ -59,7 +69,11 @@ abstract class NetworkBound<RequestType, ResultType>
                     //reload new data from Db
                     result.addSource(loadFromDb()) { newData ->
                         println(newData)
-                        setValue(Resource.success(newData))
+                        setValue(
+                            Resource.success(
+                                newData
+                            )
+                        )
                     }
                 }
             } else {
@@ -67,7 +81,12 @@ abstract class NetworkBound<RequestType, ResultType>
                 val errorMsg = errorResponseMessage(response)
                 uiScope.launch {
                     result.addSource(dbSource) { data ->
-                        setValue(Resource.error(errorMsg, data))
+                        setValue(
+                            Resource.error(
+                                errorMsg,
+                                data
+                            )
+                        )
                     }
                 }
             }

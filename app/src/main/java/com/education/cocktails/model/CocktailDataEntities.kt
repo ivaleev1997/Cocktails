@@ -23,9 +23,10 @@ data class Cocktail(
     @SerializedName("strDrinkThumb")
     val image: String?,
 
-    val favorite: Boolean?,
+    var favorite: Boolean,
+    val ingredientWithMeasure: List<Pair<String, String>>
 
-    val ingredient1: String?,
+/*    val ingredient1: String?,
     val ingredient2: String?,
     val ingredient3: String?,
     val ingredient4: String?,
@@ -54,19 +55,21 @@ data class Cocktail(
     val measure12: String?,
     val measure13: String?,
     val measure14: String?,
-    val measure15: String?
+    val measure15: String?*/
 )
 
 @Entity
 data class CocktailsCategory(
-    @PrimaryKey(autoGenerate = false)
+    @PrimaryKey(autoGenerate = true)
+    val id: Long,
     @SerializedName("strCategory")
     val category: String
 )
 
 @Entity
 data class CocktailsIngredient(
-    @PrimaryKey(autoGenerate = false)
+    @PrimaryKey(autoGenerate = true)
+    val id: Long,
     @SerializedName("strIngredient1")
     val ingredient: String
 )
