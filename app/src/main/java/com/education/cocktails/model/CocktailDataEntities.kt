@@ -56,7 +56,31 @@ data class Cocktail(
     val measure13: String?,
     val measure14: String?,
     val measure15: String?*/
-)
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as Cocktail
+
+        if (idDrink != other.idDrink) return false
+        if (drink != other.drink) return false
+        if (instructions != other.instructions) return false
+        if (image != other.image) return false
+        if (favorite != other.favorite) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = idDrink.hashCode()
+        result = 31 * result + drink.hashCode()
+        result = 31 * result + (instructions?.hashCode() ?: 0)
+        result = 31 * result + (image?.hashCode() ?: 0)
+        result = 31 * result + favorite.hashCode()
+        return result
+    }
+}
 
 @Entity
 data class Category(

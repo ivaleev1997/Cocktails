@@ -89,6 +89,13 @@ class DetailsFragment : DaggerFragment() {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.favorite_menu, menu)
+
+        val favoriteItem = menu.findItem(R.id.favorite_item)
+
+        detailsViewModel.favoriteStatus().observe(viewLifecycleOwner) { flag ->
+            if (flag) favoriteItem.setIcon(R.drawable.ic_favorite_clicked)
+            else favoriteItem.setIcon(R.drawable.ic_favorite_not_clicked)
+        }
     }
 
     private fun setAppBarListener() {
@@ -116,10 +123,9 @@ class DetailsFragment : DaggerFragment() {
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.isNestedScrollingEnabled = false
         recyclerView.adapter = adapter
-        detailsViewModel.cocktailId = getCocktailIdFromArguments()
 
         detailsViewModel
-            .loadCocktailDetails()
+            .loadCocktailDetails(getCocktailIdFromArguments())
             .observe(viewLifecycleOwner) { resource ->
                 if (resource.status == Status.SUCCESS && !resource.data.isNullOrEmpty()) {
                     nameDrinkTextView.text = resource.data[0].drink
@@ -158,9 +164,10 @@ class DetailsFragment : DaggerFragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.favorite_item -> {
-                return true
+                detailsViewModel.changeFavorite()
             }
         }
+
         return true
     }
 }

@@ -40,9 +40,7 @@ abstract class NetworkBound<RequestType, ResultType>
 
     @MainThread
     private fun setValue(newValue: Resource<ResultType>) {
-        if (result.value != newValue) {
             result.value = newValue
-        }
     }
 
     private fun fetchFromNetwork(dbSource: LiveData<ResultType>) {

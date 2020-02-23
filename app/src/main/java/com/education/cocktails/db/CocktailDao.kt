@@ -20,7 +20,7 @@ interface CocktailDao {
     fun insertCocktail(cocktail: Cocktail)
 
     @Query("SELECT * FROM cocktail WHERE :id = cocktail.idDrink")
-    fun getCocktailById(id: Long): List<Cocktail>
+    fun getCocktailById(id: Long): LiveData<List<Cocktail>>
 
     @Query("SELECT * FROM cocktail WHERE cocktail.favorite = 1")
     fun getFavoriteCocktails(): List<Cocktail>

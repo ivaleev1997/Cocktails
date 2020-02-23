@@ -12,13 +12,15 @@ class DetailsViewModel
     private val detailsUseCase: DetailsUseCase
 ): BaseViewModel() {
 
-    var cocktailId: Long = 0L
+    fun favoriteStatus(): LiveData<Boolean> {
+        return detailsUseCase.favoriteStatus
+    }
 
-    fun loadCocktailDetails(): LiveData<Resource<List<Cocktail>>> {
+    fun loadCocktailDetails(cocktailId: Long): LiveData<Resource<List<Cocktail>>> {
         return detailsUseCase.loadCocktailsDetails(cocktailId, uiScope)
     }
 
-    fun changeFavorite(flag: Boolean) {
-        detailsUseCase.changeFavorite(cocktailId, flag, uiScope)
+    fun changeFavorite() {
+        detailsUseCase.changeFavorite(uiScope)
     }
 }

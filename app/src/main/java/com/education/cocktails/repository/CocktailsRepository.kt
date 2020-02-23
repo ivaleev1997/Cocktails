@@ -49,15 +49,7 @@ class CocktailsRepository
             }
 
             override fun loadFromDb(): LiveData<List<Cocktail>> {
-                val mutableLiveData = MutableLiveData<List<Cocktail>>()
-                coroutineScope.launch {
-                    val cocktail = async(Dispatchers.IO) {
-                        cocktailDao.getCocktailById(id)
-                    }
-                    mutableLiveData.value = cocktail.await()
-                }
-
-                return mutableLiveData
+                return cocktailDao.getCocktailById(id)
             }
 
             override fun createCall(): LiveData<Response<TheRemoteDBCocktailsResponse>> {
@@ -74,12 +66,18 @@ class CocktailsRepository
         }.asLiveData()
     }
 
-    fun changeFavoriteFlag(id: Long, flag: Boolean, coroutineScope: CoroutineScope) {
+/*    fun changeFavoriteFlag(id: Long, flag: Boolean, coroutineScope: CoroutineScope) {
         coroutineScope.launch(Dispatchers.IO) {
             val cocktailList = cocktailDao.getCocktailById(id)
             if (cocktailList.isNotEmpty()) {
                 cocktailDao.insertCocktail(cocktailList.first().apply { favorite = flag })
             }
+        }
+    }*/
+
+    fun saveCocktail(cocktail: Cocktail, coroutineScope: CoroutineScope) {
+        coroutineScope.launch(Dispatchers.IO) {
+            cocktailDao.insertCocktail(cocktail)
         }
     }
 
