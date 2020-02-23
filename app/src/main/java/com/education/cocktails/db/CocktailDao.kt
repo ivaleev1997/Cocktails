@@ -24,4 +24,7 @@ interface CocktailDao {
 
     @Query("SELECT * FROM cocktail WHERE cocktail.favorite = 1")
     fun getFavoriteCocktails(): List<Cocktail>
+
+    @Query("SELECT * FROM cocktail WHERE cocktail.idDrink IN (:listId)")
+    fun getCocktailsByIds(listId: List<Long>): LiveData<List<Cocktail>>
 }

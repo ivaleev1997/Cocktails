@@ -5,5 +5,5 @@ data class TheRemoteDBCocktailsResponse(
 )
 
 data class TheRemoteDBIngredientsResponse(
-    val drinks: List<CocktailsIngredient>
+    val drinks: List<Ingredient>
 )

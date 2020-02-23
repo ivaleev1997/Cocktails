@@ -1,4 +1,4 @@
-package com.education.cocktails
+package com.education.cocktails.model
 
 data class Suggestion(
     val id: Long,

@@ -5,32 +5,24 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.education.cocktails.db.CocktailsDb
 import com.education.cocktails.model.Cocktail
-import com.education.cocktails.model.CocktailsIngredient
 import com.education.cocktails.model.TheRemoteDBCocktailsResponse
-import com.education.cocktails.model.TheRemoteDBIngredientsResponse
 import com.education.cocktails.network.Resource
 import com.education.cocktails.network.TheCocktailsApi
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import retrofit2.Response
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class CocktailsRepository
 @Inject constructor(cocktailsDb: CocktailsDb, val cocktailsApi: TheCocktailsApi) {
 
     private val cocktailDao = cocktailsDb.getCocktailDao()
-    private val ingredientDao = cocktailsDb.getIngredientDao()
 
     fun loadCocktails(coroutineScope: CoroutineScope): LiveData<Resource<List<Cocktail>>> =
         object : NetworkBound<TheRemoteDBCocktailsResponse, List<Cocktail>>(coroutineScope) {
             override fun saveCallResult(item: TheRemoteDBCocktailsResponse?) {
-                val drinks = item?.drinks
-                if (!drinks.isNullOrEmpty()) {
-                    val favorites = cocktailDao.getFavoriteCocktails()
-                    cocktailDao.insertCocktails(updateNewCocktailsList(favorites, drinks))
-                }
+                saveCallResultCocktails(item?.drinks)
             }
             //TODO Crate DataFreshnessChecker
             override fun shouldFetch(data: List<Cocktail>?): Boolean = data.isNullOrEmpty()
@@ -40,38 +32,14 @@ class CocktailsRepository
             }
 
             override fun createCall(): LiveData<Response<TheRemoteDBCocktailsResponse>> {
-                val mutableLiveData = MutableLiveData<Response<TheRemoteDBCocktailsResponse>>()
-                coroutineScope.launch {
-                    val response = async(Dispatchers.IO) {
-                        cocktailsApi.filterByCategoryAsync("Cocktail")
-                    }
-
-                    mutableLiveData.value = response.await()
-                }
-
-                return mutableLiveData
+                return createCallForMainCocktailsList(coroutineScope)
             }
         }.asLiveData()
-
-    private fun updateNewCocktailsList(favorites: List<Cocktail>, newData: List<Cocktail>): List<Cocktail> {
-        val drinks = newData.toMutableList()
-        favorites.forEach {favorite ->
-            drinks.map {newData ->
-                if (newData.idDrink == favorite.idDrink)
-                    newData.favorite = favorite.favorite
-            }
-        }
-
-        return drinks
-    }
 
     fun loadCocktailById(id: Long, coroutineScope: CoroutineScope): LiveData<Resource<List<Cocktail>>> {
         return object : NetworkBound<TheRemoteDBCocktailsResponse, List<Cocktail>>(coroutineScope) {
             override fun saveCallResult(item: TheRemoteDBCocktailsResponse?) {
-                val drinks = item?.drinks
-                if (!drinks.isNullOrEmpty()) {
-                    cocktailDao.insertCocktails(drinks)
-                }
+                saveCallResultCocktails(item?.drinks)
             }
 
             override fun shouldFetch(data: List<Cocktail>?): Boolean {
@@ -128,33 +96,43 @@ class CocktailsRepository
         return mutableLiveData
     }
 
-    fun loadIngredients(uiScope: CoroutineScope): LiveData<Resource<List<CocktailsIngredient>>> {
-        return object : NetworkBound<TheRemoteDBIngredientsResponse, List<CocktailsIngredient>>(uiScope) {
-            override fun saveCallResult(item: TheRemoteDBIngredientsResponse?) {
-                val ingredients = item?.drinks
-                if (!ingredients.isNullOrEmpty()) {
-                    ingredientDao.insertAll(ingredients)
-                }
+    fun loadCocktailsByIngredientNamesList(coroutineScope: CoroutineScope, ingredientNames: List<String>): LiveData<Resource<List<Cocktail>>> {
+        return object : NetworkBound<TheRemoteDBCocktailsResponse, List<Cocktail>>(coroutineScope) {
+            private var fetchedList = listOf<Cocktail>()
+            override fun saveCallResult(item: TheRemoteDBCocktailsResponse?) {
+                fetchedList = item?.drinks ?: listOf()
+                saveCallResultCocktails(fetchedList)
             }
 
-            override fun shouldFetch(data: List<CocktailsIngredient>?): Boolean = data.isNullOrEmpty()
+            override fun shouldFetch(data: List<Cocktail>?): Boolean = true
 
-            override fun loadFromDb(): LiveData<List<CocktailsIngredient>> {
-                return ingredientDao.getIngredients()
-            }
-
-            override fun createCall(): LiveData<Response<TheRemoteDBIngredientsResponse>> {
-                val mutableLiveData = MutableLiveData<Response<TheRemoteDBIngredientsResponse>>()
-                uiScope.launch {
-                    val response = async(Dispatchers.IO) {
-                        cocktailsApi.getListIngredients()
+            override fun loadFromDb(): LiveData<List<Cocktail>> =
+                if (fetchedList.isNullOrEmpty())
+                    cocktailDao.getCocktails()
+                else {
+                    val mediatorLiveData = MediatorLiveData<List<Cocktail>>()
+                    val dBSource = cocktailDao.getCocktails()
+                    mediatorLiveData.addSource(dBSource) { cocktails ->
+                        mediatorLiveData.value = cocktails.filter {
+                            fetchedList.contains(it)
+                        }
                     }
-                    mutableLiveData.value = response.await()
+                    mediatorLiveData
+                }
+
+            override fun createCall(): LiveData<Response<TheRemoteDBCocktailsResponse>> {
+                val mutableLiveData = MutableLiveData<Response<TheRemoteDBCocktailsResponse>>()
+                coroutineScope.launch {
+                    val responsesList = ingredientNames.map {
+                        async(Dispatchers.IO) {
+                            cocktailsApi.filterByIngredientAsync(it)
+                        }
+                    }
+                    mutableLiveData.value = combineRemoteResponseList(responsesList.awaitAll())
                 }
 
                 return mutableLiveData
             }
-
         }.asLiveData()
     }
 
@@ -163,11 +141,8 @@ class CocktailsRepository
         return object : NetworkBound<TheRemoteDBCocktailsResponse, List<Cocktail>>(uiScope) {
             private var fetchedList = listOf<Cocktail>()
             override fun saveCallResult(item: TheRemoteDBCocktailsResponse?) {
-                val cocktails = item?.drinks
-                if (!cocktails.isNullOrEmpty()) {
-                    cocktailDao.insertCocktails(cocktails)
-                    fetchedList = cocktails
-                }
+                fetchedList = item?.drinks ?: listOf()
+                saveCallResultCocktails(fetchedList)
             }
 
             override fun shouldFetch(data: List<Cocktail>?): Boolean = true
@@ -198,5 +173,85 @@ class CocktailsRepository
                 return mutableLiveData
             }
         }.asLiveData()
+    }
+
+    fun loadCocktailsByIds(listId: List<Long>): LiveData<List<Cocktail>> {
+        return cocktailDao.getCocktailsByIds(listId)
+    }
+
+    private fun createCallForMainCocktailsList(coroutineScope: CoroutineScope): LiveData<Response<TheRemoteDBCocktailsResponse>> {
+        val mutableLiveData = MutableLiveData<Response<TheRemoteDBCocktailsResponse>>()
+        coroutineScope.launch {
+            val response1 = async(Dispatchers.IO) {
+                cocktailsApi.filterByCategoryAsync("Cocktail")
+            }
+            val response2 = async(Dispatchers.IO) {
+                cocktailsApi.filterByCategoryAsync("Ordinary_Drink")
+            }
+
+            mutableLiveData.value = combineRemoteResponse(response1.await(), response2.await())
+        }
+
+        return mutableLiveData
+    }
+
+    private fun combineRemoteResponse(
+        responseFirst: Response<TheRemoteDBCocktailsResponse>,
+        responseSecond: Response<TheRemoteDBCocktailsResponse>
+    ): Response<TheRemoteDBCocktailsResponse>  =
+        if (responseFirst.isSuccessful || responseSecond.isSuccessful) {
+            Response.success(combineListsFromResponse(responseFirst, responseSecond))
+        } else responseFirst
+
+    private fun combineListsFromResponse(
+        responseFirst: Response<TheRemoteDBCocktailsResponse>,
+        responseSecond: Response<TheRemoteDBCocktailsResponse>
+    ): TheRemoteDBCocktailsResponse {
+        val firstList = responseFirst.body()?.drinks ?: listOf()
+        val secondList = responseSecond.body()?.drinks ?: listOf()
+        val resultSet = (firstList + secondList).toSet()
+
+        return TheRemoteDBCocktailsResponse(resultSet.toList())
+    }
+
+    private fun combineRemoteResponseList(
+        responses: List<Response<TheRemoteDBCocktailsResponse>>
+    ): Response<TheRemoteDBCocktailsResponse> =
+        if (responses.any { it.isSuccessful }) {
+            Response.success(combineListsFromResponse(responses))
+        } else
+            responses.first()
+
+    private fun combineListsFromResponse(
+        responses: List<Response<TheRemoteDBCocktailsResponse>>
+    ): TheRemoteDBCocktailsResponse {
+        val result = mutableListOf<Cocktail>()
+        responses.forEach {
+            if (it.body()?.drinks != null)
+                result += it.body()!!.drinks
+        }
+
+        val resultSet = result.toSet()
+
+        return TheRemoteDBCocktailsResponse(resultSet.toList())
+    }
+
+    private fun saveCallResultCocktails(drinks: List<Cocktail>?) {
+        if (!drinks.isNullOrEmpty()) {
+            val favorites = cocktailDao.getFavoriteCocktails()
+            cocktailDao.insertCocktails(updateNewCocktailsList(favorites, drinks))
+        }
+    }
+
+    private fun updateNewCocktailsList(favorites: List<Cocktail>, newData: List<Cocktail>): List<Cocktail> {
+        val drinks = newData.toMutableList()
+        favorites.forEach {favorite ->
+            drinks.map {newData ->
+                if (newData.idDrink == favorite.idDrink)
+                    newData.favorite = favorite.favorite
+            }
+        }
+
+        return drinks
     }
 }

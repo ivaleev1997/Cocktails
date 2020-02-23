@@ -5,7 +5,6 @@ import androidx.room.Room
 import com.education.cocktails.db.CocktailsDb
 import com.education.cocktails.network.TheCocktailsApi
 import com.education.cocktails.network.TheCocktailsApiService
-import com.education.cocktails.repository.CocktailsRepository
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -25,14 +24,5 @@ class AppModule {
         return Room
             .databaseBuilder(application, CocktailsDb::class.java, "cocktailsDb")
             .build()
-    }
-
-    @Provides
-    @Singleton
-    fun provideCocktailsRepository(cocktailsDb: CocktailsDb, theCocktailsApi: TheCocktailsApi): CocktailsRepository {
-        return CocktailsRepository(
-            cocktailsDb,
-            theCocktailsApi
-        )
     }
 }

@@ -8,7 +8,7 @@ import retrofit2.http.Query
 
 interface TheCocktailsApi {
     @GET("random.php")
-    suspend fun getRandomAsync()
+    suspend fun getRandomCocktailAsync()
             : Response<TheRemoteDBCocktailsResponse>
 
     @GET("search.php")

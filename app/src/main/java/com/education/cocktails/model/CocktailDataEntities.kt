@@ -59,7 +59,7 @@ data class Cocktail(
 )
 
 @Entity
-data class CocktailsCategory(
+data class Category(
     @PrimaryKey(autoGenerate = true)
     val id: Long,
     @SerializedName("strCategory")
@@ -67,7 +67,7 @@ data class CocktailsCategory(
 )
 
 @Entity
-data class CocktailsIngredient(
+data class Ingredient(
     @PrimaryKey(autoGenerate = true)
     val id: Long,
     @SerializedName("strIngredient1")

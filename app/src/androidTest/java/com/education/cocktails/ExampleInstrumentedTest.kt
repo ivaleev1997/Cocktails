@@ -42,7 +42,7 @@ class ExampleInstrumentedTest {
         var randomCocktails = listOf<Cocktail>()
 
         runBlocking {
-            val response = cocktailsApi.getRandomAsync()
+            val response = cocktailsApi.getRandomCocktailAsync()
             if (response.isSuccessful)
                 randomCocktails = response.body()?.drinks ?: listOf()
         }

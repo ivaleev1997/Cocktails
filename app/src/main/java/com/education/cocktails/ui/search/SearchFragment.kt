@@ -6,7 +6,6 @@ import android.database.Cursor
 import android.database.MatrixCursor
 import android.os.Bundle
 import android.provider.BaseColumns
-import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
@@ -20,8 +19,11 @@ import androidx.lifecycle.observe
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.Fade
-import com.education.cocktails.*
+import com.education.cocktails.AppViewModelFactory
+import com.education.cocktails.GRID_LAYOUT_SPAN_COUNT
+import com.education.cocktails.R
 import com.education.cocktails.model.Cocktail
+import com.education.cocktails.model.Suggestion
 import com.education.cocktails.network.Status
 import com.education.cocktails.ui.details.DetailsSharedTransitionFragment
 import com.education.cocktails.ui.mainlist.CocktailsAdapter
@@ -73,7 +75,7 @@ class SearchFragment : DetailsSharedTransitionFragment() {
         }
         recyclerView.adapter = adapter
 
-        searchViewModel.searchResultLiveData.observe(viewLifecycleOwner) { resource ->
+        searchViewModel.searchResults().observe(viewLifecycleOwner) { resource ->
             fun setData(cocktails: List<Cocktail>?) {
                 if (!cocktails.isNullOrEmpty()) {
                     // TODO diffUtil
@@ -110,7 +112,9 @@ class SearchFragment : DetailsSharedTransitionFragment() {
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                Log.d(APP_TAG, query)
+                if (!(query.isNullOrEmpty() && query.isNullOrBlank()))
+                    searchViewModel.selectQuery(query)
+                hideKeyboard()
 
                 return false
             }
@@ -149,7 +153,7 @@ class SearchFragment : DetailsSharedTransitionFragment() {
                 searchView.setQuery(selection.name, false)
 
                 // TODO Do something with selection
-                searchViewModel.findSelected(selection)
+                searchViewModel.selectSuggestion(selection)
 
                 return true
             }
