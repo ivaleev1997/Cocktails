@@ -95,17 +95,18 @@ class SearchUseCase
             val loadCocktailsByIngredientName = cocktailsRepository.loadCocktailsByIngredientNamesList(coroutineScope, namesFromIngredients)
 
             _searchResultLiveData.addSource(loadCocktailsByIds) { cocktailsList ->
+                _searchResultLiveData.removeSource(loadCocktailsByIds)
+                val mutableList = mutableListOf<Cocktail>()
                 if (!cocktailsList.isNullOrEmpty()) {
-                    _searchResultLiveData.removeSource(loadCocktailsByIds)
-                    val mutableList = cocktailsList.toMutableList()
-                    _searchResultLiveData.addSource(loadCocktailsByIngredientName) { resource ->
-                        if (resource.status == Status.SUCCESS || resource.status == Status.ERROR) {
-                            _searchResultLiveData.removeSource(loadCocktailsByIngredientName)
-                            val fromResource = resource.data
-                            if (!fromResource.isNullOrEmpty()) {
-                                mutableList += resource.data
-                                _searchResultLiveData.value = Resource.success(mutableList.toSet().toList())
-                            }
+                    mutableList.addAll(cocktailsList)
+                }
+                _searchResultLiveData.addSource(loadCocktailsByIngredientName) { resource ->
+                    if (resource.status == Status.SUCCESS || resource.status == Status.ERROR) {
+                        _searchResultLiveData.removeSource(loadCocktailsByIngredientName)
+                        val fromResource = resource.data
+                        if (!fromResource.isNullOrEmpty()) {
+                            mutableList += resource.data
+                            _searchResultLiveData.value = Resource.success(mutableList.toSet().toList())
                         }
                     }
                 }
