@@ -1,2 +1,2 @@
-include ':app', ':core-api', ':core-impl', ':core'
+include ':app', ':core-api', ':core-impl', ':core', ':details', ':ui-core'
 rootProject.name='Cocktails'
