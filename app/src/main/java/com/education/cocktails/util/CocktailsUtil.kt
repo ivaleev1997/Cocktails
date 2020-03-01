@@ -73,7 +73,7 @@ private fun JsonObject.customGet(memberName: String): JsonElement? =
         null
 
 
-class Converters {
+class IngredientsConverter {
 
     val gson = Gson()
 

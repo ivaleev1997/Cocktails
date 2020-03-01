@@ -6,7 +6,7 @@ import androidx.room.TypeConverters
 import com.education.cocktails.model.Category
 import com.education.cocktails.model.Cocktail
 import com.education.cocktails.model.Ingredient
-import com.education.cocktails.util.Converters
+import com.education.cocktails.util.IngredientsConverter
 
 @Database(
     entities = [
@@ -16,7 +16,7 @@ import com.education.cocktails.util.Converters
     version = 1,
     exportSchema = false
 )
-@TypeConverters(Converters::class)
+@TypeConverters(IngredientsConverter::class)
 abstract class CocktailsDb: RoomDatabase() {
     abstract fun getCocktailDao(): CocktailDao
     abstract fun getCategoryDao(): CategoryDao

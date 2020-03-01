@@ -1,6 +1,6 @@
 package com.education.core_api.network
 
-interface NetworkContract {
+interface TheCocktailsDbApiContract {
 
     fun getInstance(): TheCocktailsDbApi
 }

@@ -27,8 +27,6 @@ android {
 
 }
 
-apply from: "$project.rootDir/dependency_versions.gradle"
-
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
