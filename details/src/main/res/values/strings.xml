@@ -7,4 +7,6 @@
     <string name="ingredients_title">Ingredients</string>
     <string name="measure_title">Measure</string>
     <string name="category_title">Category</string>
+
+    <string name="title_favorites">favorites</string>
 </resources>

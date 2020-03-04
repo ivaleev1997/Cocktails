@@ -7,8 +7,15 @@ import androidx.transition.Fade
 import com.education.core_api.dto.Cocktail
 import com.education.core_api.mediator.DetailsMediator
 import com.education.ui_core.DetailsTransition
+import javax.inject.Inject
 
-class DetailsMediatorImpl : DetailsMediator {
+class DetailsMediatorImpl
+    @Inject constructor() : DetailsMediator {
+
+    companion object {
+        private const val sharedName = "cocktailTransition"
+    }
+
     override fun startDetailsScreen(
         containerId: Int,
         fragmentManager: FragmentManager,
@@ -17,6 +24,11 @@ class DetailsMediatorImpl : DetailsMediator {
         exitTransition: () -> Unit
     ) {
         val fragmentTransaction = fragmentManager.beginTransaction()
+        val fragment = DetailsFragment.getInstance(cocktail.idDrink, cocktail.image)
+        setupTransition(fragment, exitTransition)
+        fragmentTransaction.addSharedElement(sharedView, sharedName)
+        fragmentTransaction.addToBackStack(null)
+        fragmentTransaction.commit()
     }
 
     private fun setupTransition(fragment: Fragment, exitTransitionCall: () -> Unit) {

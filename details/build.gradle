@@ -24,7 +24,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
 }
 
 dependencies {
@@ -43,6 +45,9 @@ dependencies {
     implementation lifecycle_ext
     implementation material
     implementation constraintlayout
+    implementation fragment
+    implementation glide
+    implementation retrofit2
 
     api project(':core')
     implementation project(':ui-core')

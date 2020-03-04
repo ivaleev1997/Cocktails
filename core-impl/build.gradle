@@ -49,4 +49,5 @@ dependencies {
     implementation okhttp3_log
 
     implementation lifecycle_ext
+    implementation kotlin_coroutines_core
 }

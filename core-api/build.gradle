@@ -41,4 +41,5 @@ dependencies {
 
     implementation retrofit2
     implementation retrofit2_converter_gson
+    implementation kotlin_coroutines_core
 }

@@ -1,13 +1,13 @@
-package com.education.cocktails.ui.details
+package com.education.details.view
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.education.cocktails.R
+import com.education.details.R
 
-class IngredientsAdapter: RecyclerView.Adapter<IngredientsAdapter.IngredientsViewHolder>() {
+class IngredientsAdapter : RecyclerView.Adapter<IngredientsAdapter.IngredientsViewHolder>() {
 
     var ingredientsWithMeasure = listOf<Pair<String, String>>()
 
@@ -27,8 +27,8 @@ class IngredientsAdapter: RecyclerView.Adapter<IngredientsAdapter.IngredientsVie
 
     inner class IngredientsViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
 
-        private val ingredientTextView: TextView = itemView.findViewById(R.id.ingredient_textview)
-        private val measureTextView: TextView = itemView.findViewById(R.id.measure_textview)
+        val ingredientTextView = itemView.findViewById<TextView>(R.id.ingredient_textview)
+        val measureTextView = itemView.findViewById<TextView>(R.id.measure_textview)
 
         fun bind(pair: Pair<String, String>) {
             ingredientTextView.text = pair.first
